@@ -1,0 +1,17 @@
+name: Circuit lab tests
+on:
+  push:
+    paths: ['circuit-lab/**', '.github/workflows/circuit-lab-tests.yml']
+  pull_request:
+    paths: ['circuit-lab/**', '.github/workflows/circuit-lab-tests.yml']
+permissions:
+  contents: read
+jobs:
+  engine:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test circuit-lab/engine.test.mjs
