@@ -16,6 +16,7 @@ a.card{display:block;background:var(--card);border:1px solid var(--line);border-
 a.card:hover{border-color:var(--acc)}
 a.card b{display:block;font-size:19px;margin-bottom:4px}
 a.card span{color:var(--dim);font-size:15px}
+button,input{font:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:10px;padding:12px 18px;background:var(--card);color:var(--txt)}button:hover{border-color:var(--acc)}:focus-visible{outline:3px solid var(--acc);outline-offset:4px}.teacher{margin-top:30px;padding-top:24px;border-top:1px solid var(--line)}.note{color:var(--dim);font-size:14px}dialog{width:min(460px,calc(100% - 32px));max-height:85vh;overflow:auto;border:1px solid var(--line);border-radius:16px;padding:26px;background:var(--bg);color:var(--txt)}dialog::backdrop{background:rgb(0 0 0 / .7)}dialog h2{margin-top:0}input{display:block;width:100%;margin:10px 0;padding:12px;border:1px solid var(--line);border-radius:8px;background:var(--card);color:var(--txt)}.actions{display:flex;gap:10px;justify-content:flex-end;margin-top:18px}.error{color:#ffb6b6;min-height:1.6em}[hidden]{display:none!important}
 </style>
 </head>
 <body>
@@ -25,6 +26,45 @@ a.card span{color:var(--dim);font-size:15px}
   <a class="card" href="turbofan.html"><b>터보팬 엔진 작동 시뮬레이션</b><span>공기가 엔진을 지나며 어떻게 힘을 만드는지 직접 조작해 봅니다.</span></a>
   <a class="card" href="time-travel.html"><b>공학의 시간여행</b><span>1750년부터 2100년까지 기술의 진화를 살펴보고, 나의 예측을 선생님께 제출합니다.</span></a>
   <a class="card" href="qr-maker.html"><b>QR 만들기</b><span>웹 주소를 넣으면 바로 QR 그림을 만들어 저장할 수 있습니다.</span></a>
+  <a class="card" href="https://hanbit-future-me-75.hanbit2601.chatgpt.site/"><b>75살의 나</b><span>미래의 내 모습을 상상하고, 내가 바라는 삶에 대한 생각을 적어 봅니다.</span></a>
+  <a class="card" href="https://han-classroom-cloud.hanbit2601.chatgpt.site/"><b>워드클라우드 · 낱말 구름</b><span>우리 반의 생각을 낱말 구름으로 모읍니다. 교사는 수업을 열고, 학생은 선생님이 보여 주는 QR로 참여하세요.</span></a>
+  <div class="teacher"><button type="button" id="admin-open">교사 관리자 모드</button><p class="note">학생이 보낸 결과와 학급별 수업 기록을 봅니다.</p></div>
 </div>
+<dialog id="admin-dialog" aria-labelledby="admin-title">
+  <h2 id="admin-title">교사 관리자 모드</h2>
+  <form id="admin-form">
+    <label for="admin-password">관리자 암호</label>
+    <input id="admin-password" type="password" inputmode="numeric" autocomplete="off" maxlength="4" required aria-describedby="admin-error">
+    <p id="admin-error" class="error" role="alert"></p>
+    <div class="actions"><button type="button" data-close>취소</button><button type="submit">확인</button></div>
+  </form>
+  <div id="admin-links" hidden>
+    <p class="note">볼 결과를 고르세요. 연결된 사이트에서 선생님 계정으로 로그인해야 합니다.</p>
+    <a class="card" href="https://hanbit-future-me-75.hanbit2601.chatgpt.site/teacher"><b>75살의 나 · 결과 보기</b><span>학생이 제출한 사진과 글 답변</span></a>
+    <a class="card" href="https://han-classroom-cloud.hanbit2601.chatgpt.site/"><b>워드클라우드 · 결과 보기</b><span>학급별 수업 기록과 질문별 낱말 구름</span></a>
+    <div class="actions"><button type="button" data-close>닫기</button></div>
+  </div>
+</dialog>
+<script>
+(() => {
+  const dialog = document.getElementById('admin-dialog');
+  const form = document.getElementById('admin-form');
+  const password = document.getElementById('admin-password');
+  const error = document.getElementById('admin-error');
+  const links = document.getElementById('admin-links');
+  function reset() { form.reset(); form.hidden = false; links.hidden = true; error.textContent = ''; }
+  document.getElementById('admin-open').addEventListener('click', () => { reset(); dialog.showModal(); password.focus(); });
+  dialog.querySelectorAll('[data-close]').forEach(button => button.addEventListener('click', () => dialog.close()));
+  dialog.addEventListener('close', reset);
+  // This is only a navigation gate. Each destination enforces teacher authentication.
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    if (password.value !== '8497') { error.textContent = '암호가 맞지 않습니다. 다시 입력해 주세요.'; password.value = ''; password.focus(); return; }
+    password.value = ''; error.textContent = ''; form.hidden = true; links.hidden = false;
+    links.querySelector('a').focus();
+  });
+  window.addEventListener('pageshow', () => { if (dialog.open) dialog.close(); reset(); });
+})();
+</script>
 </body>
 </html>
